@@ -1,0 +1,50 @@
+```{r}
+library(AnnotationHub)
+ah <- AnnotationHub()
+cgi <- ah$goldenpath.hg19.database.cpgIslandExt_0.0.1.RData
+cgi_chr16 = cgi[cgi@seqnames=="chr16"]
+
+library(BSgenome.Hsapiens.UCSC.hg19)
+# now get chromosome 16 as a `DNAString` object
+chr16 <- Hsapiens[["chr16"]]
+
+source("segmentGenome.R")
+source("simpleMixtureCGI.R")
+source("hmmCGI.R")
+
+L = 16
+non_ov = breakInChunks(length(chr16), L)
+views = Views(chr16, non_ov)
+ACGT = letterFrequency(views, c("A","C","G","T"))
+N_C = ACGT[,2]
+N_G = ACGT[,3]
+N_CG = dinucleotideFrequency(views)[,7]
+OE = (N_CG/L)/((N_C/L)*(N_G/L))
+OE[is.nan(OE)] = 0
+GC_content = (N_C + N_G)/L
+CpG_rate = N_CG/L
+
+gff_rule= as.numeric(GC_content>0.5 & OE>0.6)
+GFFislands = GRanges(seqnames="chr16", ranges=segmentGenome(gff_rule, L))
+
+P = 1/2*(N_C/L + N_G/L)
+simpleMix = simpleMixtureCGI(N_CG, P, L)
+mixtureIslands = GRanges(seqnames="chr16", ranges=segmentGenome(simpleMix$y, L))
+
+hmmMix = hmmCGI(N_CG, P, L)
+hmmIslands = GRanges(seqnames="chr16", ranges=segmentGenome(hmmMix$y, L))
+
+# remember to install epivizr with biocLite™
+# if it's not installed yet
+require(epivizr)
+
+# this requires internet access
+mgr <- startEpiviz(chr="chr16", start=4000000, end=8000000)
+gffDev <- mgr$addDevice(GFFislands, "GFF Islands")
+mixtureDev <- mgr$addDevice(mixtureIslands, "Mixture Islands")
+hmmDev <- mgr$addDevice(hmmIslands, "HMM Islands")
+mgr$service()
+# you can navigate around chr16 on your web browser
+# run this when done
+mgr$stopServer()
+```
