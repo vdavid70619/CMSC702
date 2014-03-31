@@ -1,0 +1,26 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdfetex 2013.5.30)  13 MAR 2014 23:34
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**\nonstopmode \input /Users/xiyangdai/Code/CMSC702/part2.md
+(/Users/xiyangdai/Code/CMSC702/part2.md
+Overfull \hbox (65.27426pt too wide) in paragraph at lines 1--4
+[]\tenrm Part 2 Xiyang Dai ====================================================
+==== |
+
+\hbox(6.83331+1.94444)x469.75499, glue set - 1.0
+.\hbox(0.0+0.0)x20.0
+.\tenrm P
+.\kern-0.27779
+.\tenrm a
+.\tenrm r
+.etc.
+
+)
+! Emergency stop.
+<*> ...nput /Users/xiyangdai/Code/CMSC702/part2.md
+                                                  
+*** (job aborted, no legal \end found)
+
+!  ==> Fatal error occurred, no output PDF file produced!
