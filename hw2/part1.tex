@@ -1,0 +1,218 @@
+%
+% Xiyang Dai
+% 113101816
+%
+
+
+\documentclass[paper=letter, fontsize=11pt]{scrartcl} % Letter paper and 11pt font size
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\centering \normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead[R]{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{12pt} % Customize the height of the header
+
+
+\usepackage{fancyvrb}
+
+%for matlab
+\usepackage{mcode}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{float}
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+%\textsc{university, school or department name} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.1cm] % Thin top horizontal rule
+\huge Homework 2 - Part 1 \\ % The assignment title
+\horrule{2pt} \\[0.1cm] % Thick bottom horizontal rule
+}
+
+\author{Xiyang Dai} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+% first page header and footer style
+\fancypagestyle{plain}{
+\fancyhead[R]{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{12pt} % Customize the height of the header
+}
+
+\begin{document}
+
+\maketitle % Print the title
+
+\subsection*{\leftline{Question 1}}
+\begin{align*}
+\begin{split}
+	P(\theta_g|y_{g1}, \dots, y_{gm}) &\propto P(y_{g1}, \dots, y_{gm}|\theta_g) P(\theta_g)\\
+	&\propto\ \left(\prod_i P(y_{gi}|\theta_g)\right) P(\theta_g)\\
+	&\propto \left(\prod_i\frac{1}{\sqrt{2\pi\sigma_g^2}}\exp\left\{-\frac{1}{2}\frac{(y_{gi}-\theta_g)^2}{\sigma_g^2} \right\}\right) \frac{1}{\sqrt{2\pi\tau^2}}\exp\left\{-\frac{1}{2}\frac{\theta_g^2}{\tau^2} \right\}\\
+	&\propto \exp\left\{-\frac{1}{2}\left(\sum_i\frac{(y_{gi}-\theta_g)^2}{\sigma_g^2}+\frac{\theta_g^2}{\tau^2} \right)\right\}\\
+	&\propto \exp\left\{-\frac{1}{2}\left(\frac{\tau^2\sum_i(y_{gi}-\theta_g)^2+\theta_g^2\sigma_g^2}{\sigma_g^2\tau^2} \right)\right\}\\	
+	&\propto \exp\left\{-\frac{1}{2}\left(\frac{\tau^2\sum_iy_{gi}^2-\tau^22\sum_iy_{gi}\theta_g + \tau^2\sum_i\theta_g^2+\theta_g^2\sigma_g^2}{\sigma_g^2\tau^2} \right)\right\}\\
+	\intertext{Any term that dosen't have a $\theta$ can be seen as a constant, so I drop them:}	
+	&\propto \exp\left\{-\frac{1}{2}\left(\frac{-2m\tau^2\bar{y}\theta_g + m\tau^2\theta_g^2+\theta_g^2\sigma_g^2}{\sigma_g^2\tau^2} \right)\right\}\\
+	&\propto \exp\left\{-\frac{1}{2}\left(\frac{-2m\tau^2\bar{y}\theta_g + \theta_g^2(m\tau^2+\sigma_g^2)}{\sigma_g^2\tau^2} \right)\right\}\\
+	&\propto \exp\left\{-\frac{1}{2}\left(\frac{\theta_g^2 -2\frac{m\tau^2\bar{y}\theta_g}{m\tau^2+\sigma_g^2}}{\frac{\sigma_g^2\tau^2}{m\tau^2+\sigma_g^2}} \right)\right\}\\	
+	&\propto \exp\left\{-\frac{1}{2}\left(\frac{(\theta_g -\frac{m\tau^2\bar{y}}{m\tau^2+\sigma_g^2})^2}{\frac{\sigma_g^2\tau^2}{m\tau^2+\sigma_g^2}} \right)\right\}\\
+	\intertext{Let $\lambda_g = \frac{m\tau^2}{m\tau^2+\sigma_g^2}$, then we have:}	
+	&\propto \exp\left\{-\frac{1}{2}\left(\frac{(\theta_g -\lambda_g\bar{y})^2}{\lambda_g\frac{\sigma_g^2}{m}} \right)\right\}\\
+\end{split}
+\end{align*}
+Hence, I show that
+\[
+P(\theta_g|y_{g1}, \dots, y_{gm}) \sim N(\lambda_g\bar{y_g},\lambda_g\frac{\sigma_g^2}{m})
+\]
+As the $m \rightarrow \infty$, the posterior distribution will $\lambda_g = \frac{m\tau^2}{\sigma_g^2+m\tau^2} \rightarrow 1$, $\lambda_g\bar{y}_g \rightarrow \bar{y}_g$ and $\lambda_g\frac{\sigma_g^2}{m}=\frac{\tau^2\sigma^2}{\sigma_g^2+m\tau^2} \rightarrow 0$. So, we can conclude that as the $m$ increases, the posterior distribution tends to be $N(\bar{y}_g,0)$.
+
+\subsection*{\leftline{Quetstion 2a}}
+\begin{align*}
+\begin{split}
+P(\theta_g|y_{g}) &\propto P(y_{g}|\theta_g) P(\theta_g)\\
+&\propto \frac{1}{\sqrt{2\pi\theta_g^2}}\exp\left\{-\frac{1}{2}\frac{(y_{g}-\theta_g)^2}{\sigma_g^2} \right\} \frac{1}{\sqrt{2\pi\tau^2}}\exp\left\{-\frac{1}{2}\frac{(\theta_g-\mu)^2}{\tau^2} \right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{(y_{gi}-\theta_g)^2}{\sigma_g^2}+\frac{(\theta_g-\mu)^2}{\tau^2} \right)\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{\tau^2(y_{g}-\theta_g)^2+\sigma_g^2(\theta_g-\mu)^2}{\sigma_g^2\tau^2} \right)\right\}\\	
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{\tau^2 y_{g}^2-\tau^22y_{g}\theta_g + \tau^2\theta_g^2+\sigma^2\theta_g^2 - \sigma^22\theta_g\mu + \sigma^2\mu^2}{\sigma_g^2\tau^2} \right)\right\}\\
+\intertext{Any term that dosen't have a $\theta$ can be seen as a constant, so I drop them:}	
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{-\tau^22y_{g}\theta_g + \tau^2\theta_g^2+\sigma^2\theta_g^2 - \sigma^22\theta_g\mu}{\sigma_g^2\tau^2} \right)\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{\theta_g^2(\tau^2+\sigma^2) - 2\theta_g(\sigma^2\mu + \tau^2y_{g})}{\sigma_g^2\tau^2} \right)\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{\theta_g^2 - 2\theta_g\frac{\sigma^2\mu + \tau^2y_{g}}{(\tau^2+\sigma^2)}}{\frac{\sigma_g^2\tau^2}{(\tau^2+\sigma^2)}} \right)\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{(\theta_g - \frac{\sigma^2\mu + \tau^2y_{g}}{(\tau^2+\sigma^2)})^2}{\frac{\sigma_g^2\tau^2}{(\tau^2+\sigma^2)}} \right)\right\}\\
+\intertext{Let $\lambda_g = \frac{\tau^2}{\tau^2+\sigma_g^2}$, then we have:}	
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{(\theta_g -(\lambda_g y_g + (1-\lambda_g)\mu))^2}{\lambda_g\sigma_g^2} \right)\right\}\\
+\end{split}
+\end{align*}
+Hence, I show that
+\[
+P(\theta_g|y_{g}) \sim N(\lambda_g y_g + (1-\lambda_g)\mu,\lambda_g\sigma_g^2)
+\]
+
+\subsection*{\leftline{Quetstion 2b}}
+\begin{align*}
+\begin{split}
+P(\theta_g|y_{g1}, \dots, y_{gm}) &\propto P(y_{g1}, \dots, y_{gm}|\theta_g) P(\theta_g)\\
+&\propto\ \left(\prod_i P(y_{gi}|\theta_g)\right) P(\theta_g)\\
+&\propto \left( \prod_i \frac{1}{\sqrt{2\pi\theta_g^2}}\exp\left\{-\frac{1}{2}\frac{\sum_i(y_{ig}-\theta_g)^2}{\sigma_g^2} \right\}\right) \frac{1}{\sqrt{2\pi\tau^2}}\exp\left\{-\frac{1}{2}\frac{(\theta_g-\mu)^2}{\tau^2} \right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{\sum_i(y_{ig}-\theta_g)^2}{\sigma_g^2}+\frac{(\theta_g-\mu)^2}{\tau^2} \right)\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{\tau^2\sum_i(y_{ig}-\theta_g)^2+\sigma_g^2(\theta_g-\mu)^2}{\sigma_g^2\tau^2} \right)\right\}\\	
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{\tau^2\sum_i y_{ig}^2-\tau^22\sum_iy_{ig}\theta_g + \tau^2\sum_i\theta_g^2+\sigma^2\theta_g^2 - \sigma^22\theta_g\mu + \sigma^2\mu^2}{\sigma_g^2\tau^2} \right)\right\}\\
+\intertext{Any term that dosen't have a $\theta$ can be seen as a constant, so I drop them:}	
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{-2m\tau^2\bar{y}_g\theta_g + m\tau^2\theta_g^2+\sigma^2\theta_g^2 - \sigma^22\theta_g\mu}{\sigma_g^2\tau^2} \right)\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{\theta_g^2(m\tau^2+\sigma^2) - 2\theta_g(\sigma^2\mu + m\tau^2\bar{y}_g)}{\sigma_g^2\tau^2} \right)\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{\theta_g^2 - 2\theta_g\frac{\sigma^2\mu + m\tau^2\bar{y}_g}{(\tau^2+m\sigma^2)}}{\frac{\sigma_g^2\tau^2}{(\tau^2+m\sigma^2)}} \right)\right\}\\
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{(\theta_g - \frac{\sigma^2\mu + m\tau^2\bar{y}_g}{(\tau^2+m\sigma^2)})^2}{\frac{\sigma_g^2\tau^2}{(\tau^2+m\sigma^2)}} \right)\right\}\\
+\intertext{Let $\lambda_g = \frac{m\tau^2}{\tau^2+m\sigma_g^2}$, then we have:}	
+&\propto \exp\left\{-\frac{1}{2}\left(\frac{(\theta_g -(\lambda_g y_g + (1-\lambda_g)\mu))^2}{\lambda_g\frac{\sigma_g^2}{m}} \right)\right\}\\
+\end{split}
+\end{align*}
+Hence, I show that
+\[
+P(\theta_g|y_{g1}, \dots, y_{gm}) \sim N(\lambda_g y_g + (1-\lambda_g)\mu,\lambda_g\frac{\sigma_g^2}{m})
+\]
+
+\subsection*{\leftline{Quetstion 3a}}
+\begin{align*}
+\begin{split}
+E[\bar{Y}_g] &= E[\frac{1}{m}\sum_iY_{ig}] \\
+&=  \frac{1}{m} \sum_i E[Y_{ig}] \\
+&=  \frac{1}{m}m\mu \\
+&= \mu \\
+Var[\bar{Y}_g] &= E[Var[\bar{Y}_g|\theta_g]] + Var[E[\bar{Y}_g|\theta_g]] \\
+&= E[Var[\frac{1}{m}\sum_iY_{ig}|\theta_g]] + Var[E[\frac{1}{m}\sum_iY_{ig}|\theta_g]] \\
+&= E[\frac{1}{m^2}\sum_i Var[Y_{ig}|\theta_g]] + Var[\frac{1}{m}\sum_iE[Y_{ig}|\theta_g]] \\
+\intertext{Since I know $Y_g - \theta_g = \epsilon_g \sim N(0,\sigma^2)$ and $\theta_g \sim N(\mu,\tau^2)$, I can induct:}
+&= E[\frac{1}{m^2} m \sigma^2] + Var[\frac{1}{m}m\theta_g] \\
+&= E[\frac{\sigma^2}{m}] + Var[\theta] \\
+&= \frac{\sigma^2}{m} + \tau^2 
+\end{split}
+\end{align*}
+Hence, I show that 
+\[
+\bar{Y}_g|\mu \sim N(\mu, \frac{\sigma^2}{m} + \tau^2)
+\]
+
+\subsection*{\leftline{Quetstion 3b}}
+In order to estimate $\mu$, we want to maximize the log likelihood of $P(\bar{Y}_1,\dots,\bar{Y}_i|\mu)$:
+\begin{align*}
+\begin{split}
+	\arg\max_{\mu} \text{ } \log( P(\bar{Y}_1,\dots,\bar{Y}_i|\mu)) &= \arg\max_{\mu} \sum_g \log(P(\bar{Y}_g|\mu)) \\
+	&\propto \arg\max_{\mu} \sum_g \log\left(\exp\left\{-\frac{1}{2}\frac{(\bar{Y}_g - \mu)^2}{\frac{\sigma_g^2}{m} + \tau^2}\right\}\right) \\
+	&\propto \arg\max_{\mu} -\frac{1}{2} \sum_g \frac{(\bar{Y}_g - \mu)^2}{\frac{\sigma_g^2}{m} + \tau^2}
+\end{split}
+\end{align*}
+Let $L(\mu) = \sum_g \frac{(\bar{Y}_g - \mu)^2}{\frac{\sigma_g^2}{m} + \tau^2}$. In order to solve this maximization problem, we need to set $\frac{\partial L}{\partial \mu} = 0$, solve $\mu$:
+\begin{align*}
+\begin{split}
+&\frac{\partial}{\partial \mu}\left( \sum_g \frac{(\bar{Y}_g - \mu)^2}{\frac{\sigma_g^2}{m} + \tau^2}  \right) =\sum_g \frac{-2(\bar{Y}_g - \mu)}{\frac{\sigma_g^2}{m} + \tau^2} =0 \\
+&\Longrightarrow \hat{\mu} = \frac{\sum_g \frac{m}{\sigma_g^2 + m\tau^2} \bar{y}_g}{\sum_g \frac{m}{\sigma_g^2 + m\tau^2}} \\
+&\Longrightarrow \hat{\mu} = \frac{\sum_g w_g \bar{y}_g}{\sum_g w_g } \quad \text{  where, } w_g = \frac{m}{\sigma_g^2 + m\tau^2}.
+\end{split}
+\end{align*}
+
+Since we have $w_g \propto \frac{1}{\sigma_g^2}$, the weight will bias low variance samples. If the variance is low, we can trust the sample, so the weight will be high. If the variance is high, we cannot trust this sample, so the weight will be penalized and it will be low.
+
+\subsection*{\leftline{Quetstion 3c}}
+If we change $Var[Y_g|\theta_g] = \theta_g^2\sigma_g^2$, $\bar{Y}_g|\mu$ will become:
+\[
+\bar{Y}_g|\mu \sim N(\mu, \frac{\theta_g^2\sigma_g^2}{m} + \tau^2)
+\]
+Repeat the steps in (3b), we will get
+\[
+\hat{\mu} = \frac{\sum_g w_g \bar{y}_g}{\sum_g w_g } \quad \text{where, } w_g = \frac{m}{\theta_g^2\sigma_g^2 + m\tau^2}.
+\]
+
+Because of $\theta_g \sim N(\mu, \tau^2)$, as $\mu \rightarrow 0$, $\theta_g \rightarrow 0$, weight $w_g$ tends to be large. Hence, we can see this weight is actually biased towards zero. 
+
+\subsection*{\leftline{Quetstion 4}}
+\begin{align*}
+\begin{split}
+\log\frac{P(\bar{y}_g|\mu\ne0)}{P(\bar{y}_g|\mu = 0)} &\propto \log  \frac{\exp\left\{-\frac{1}{2}\frac{(\bar{y}_g-\hat{\mu})^2}{\frac{\sigma^2}{m}+\tau^2}\right\}}{\exp\left\{-\frac{1}{2}\frac{\bar{y}_g^2}{\frac{\sigma^2}{m}+\tau^2}\right\}} \\
+&\propto -\frac{1}{2}\frac{(\bar{y}_g-\hat{\mu})^2}{\frac{\sigma^2}{m}+\tau^2} + \frac{1}{2}\frac{\bar{y}_g^2}{\frac{\sigma^2}{m}+\tau^2} \\
+\text{Let $w_g = \frac{m\tau^2}{\sigma^2+m\tau^2}$,} &\\
+&\propto 2w_g\hat{\mu}\bar{y}_g - w_g\hat{\mu}^2
+\end{split}
+\end{align*}
+If we want to have more evidence that $E\bar{y}_g \ne 0$ than $E\bar{y}_g = 0$, we need to let
+\begin{align*}
+\begin{split}
+&\log\frac{P(\bar{y}_g|\mu\ne0)}{P(\bar{y}_g|\mu = 0)} > 0 \\
+& \Longrightarrow 2w_g\hat{\mu}\bar{y}_g - w_g\hat{\mu}^2 >0 \\
+& \Longrightarrow \bar{y}_g> \frac{\hat{\mu}}{2}
+\end{split}
+\end{align*}
+
+So when $\bar{y}_g> \frac{\hat{\mu}}{2}$, we have more evidence that $E\bar{y}_g \ne 0$ than $E\bar{y}_g = 0$.
+
+\end{document}
